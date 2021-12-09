@@ -1,11 +1,6 @@
 import json
 from random import randint
 
-def _tclient():
-    with open("Stock.json", "r+") as file:
-        data = json.load(file)
-
-    return data['bot_token']
 
 def add_people(user: int):
     with open("Stock.json", "r+") as file:
