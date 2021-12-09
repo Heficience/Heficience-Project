@@ -4,8 +4,7 @@ from discord.utils import get
 from github import Github
 
 
-from data import add_people, get_people, remove_people, add_token, id_to_token, get_id
-
+from data import add_people, get_people, remove_people, add_token, id_to_token, get_id, _tclient
 
 # -------------------------------------- Bot Informations -------------------------------------- #
 
@@ -167,4 +166,4 @@ async def help(ctx):
     await ctx.send(embed=embed)
 
 
-client.run("OTE2NzU2Mzk5MjM1Njg2NDAx.Yaux7g.OE12mKOFrJ07H3A7sKOfuCDpw5o")
+client.run(_tclient())
