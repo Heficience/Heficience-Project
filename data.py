@@ -1,6 +1,21 @@
 import json
 from random import randint
 
+def get_channel():
+    with open("Stock.json", "r+") as file:
+        data = json.load(file)
+    return data['channel']
+
+def add_channel(id):
+    with open("Stock.json", "r+") as file:
+        data = json.load(file)
+        if not id in data['channel']:
+            data['channel'].append(id)
+            file.seek(0)
+            json.dump(data, file, indent=4)
+        else:
+            return True
+
 def _tclient():
     with open("Stock.json", "r+") as file:
         data = json.load(file)

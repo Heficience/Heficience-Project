@@ -4,7 +4,8 @@ from discord.utils import get
 from github import Github
 
 
-from data import add_people, get_people, remove_people, add_token, id_to_token, get_id, _tclient
+from data import add_people, get_people, remove_people, add_token, id_to_token, get_id, _tclient, get_channel, \
+    add_channel
 
 # -------------------------------------- Bot Informations -------------------------------------- #
 
@@ -27,6 +28,29 @@ admin_list = [454972825170870273, 471389909375123485, 708717385456156716, 744961
 @commands.is_owner()
 async def shutdown(ctx):
     await ctx.bot.logout()
+
+@client.command()
+async def issues(ctx, state = None):
+    member = ctx.author.id
+    if not state:
+        if member in get_people():
+            if ctx.channel.id in get_channel():
+                g = Github("https://www.github.com/heficience", "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")
+                name = ctx.channel.name
+                repo = g.get_repo(f"heficience/{name}")
+                open_issues = repo.get_issues(state='open')
+                await ctx.send("> Questions ouvertes \n")
+                for issue in open_issues:
+                    await ctx.send(f"{issue}")
+
+                closed_issues = repo.get_issues(state='closed')
+                await ctx.send("\n> Questions fermées \n")
+                for issue in closed_issues:
+                    await ctx.send(f"{issue}")
+            else:
+                await ctx.send("Tu ne peux pas faire cette commande dans ce channel !")
+        else:
+            await ctx.send("Tu n'as pas la permission !")
 
 # -------------------------------------- Comment crée son token ! -------------------------------------- #
 
@@ -122,6 +146,8 @@ async def projects(ctx, id:str, name: str = None, private:bool = None):
                                                 category=discord.utils.get(ctx.guild.categories, name='Project'))
                 await ctx.author.add_roles(autorize_role)
                 await ctx.send(f"Le channel **{name.lower()}** a bien était crée ! ")
+                channel = discord.utils.get(ctx.guild.channels, name=name)
+                add_channel(channel.id)
             else:
                 await ctx.send(f"Veuillez entrez un identifiant correcte")
 
@@ -160,6 +186,10 @@ async def help(ctx):
                           description="=> +projects ID Nomdurepo True Ou False - Création d'un project automatiquement (Discord ( Salon ) + Github ( Repo )\n"
                                       "\n=> +gentoken - Explication pour génerer ton token !\n"
                                       "\n=> +token tontoken - Permet de mettre ton token dans la liste\n"
+                                      "\n=> +addgit ID-USER - Ajoute la permission d'éxecuter les commandes\n"
+                                      "\n=> +removegit ID-USER - Retire la permission d'éxecuter les commandes\n"
+                                      "\n=> +user - Voir tout les utilisateurs ayant accès au commandes\n"
+                                      "\n=> +issues - Permet de voir les problèmes détecter\n"
                                       "\n\n True = Depot privée | False = Depot public",
                           color=0xf1c40f)
     embed.set_thumbnail(url="https://imgur.com/d5JaaER.png")
